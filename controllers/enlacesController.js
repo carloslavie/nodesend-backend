@@ -12,11 +12,11 @@ exports.nuevoEnlace = async(req, res, next) =>{
     }
 
     //Crear un objeto enlace
-    const { nombre_original } = req.body;
+    const { nombre_original, nombre } = req.body;
 
     const enlace = new Enlaces();
     enlace.url = shortid.generate();
-    enlace.nombre = shortid.generate();
+    enlace.nombre = nombre;
     enlace.nombre_original = nombre_original;
     
 
@@ -48,11 +48,19 @@ exports.nuevoEnlace = async(req, res, next) =>{
         console.log(error);
     }
 }
-
+//OBTIENE UN LISTADO DE TODOS LOS ENLACES
+exports.todosEnlaces = async(req, res)=>{
+    try {
+        const enlaces = await Enlaces.find({}).select('url')
+        res.json({enlaces})
+    } catch (error) {
+        console.log(error)
+    }
+}
 //Obtener el enlace
 exports.obtenerEnlace = async (req, res, next) =>{
 
-    const { url } = req.params;
+    const {  url } = req.params;
     const enlace = await Enlaces.findOne({ url });
     if(!enlace){
         res.status(404).json({msg: 'el enlace no existe'});
@@ -61,19 +69,5 @@ exports.obtenerEnlace = async (req, res, next) =>{
 
     res.json({archivo: enlace.nombre})
 
-    const { descargas, nombre } = enlace;
-
-    if(descargas === 1){
-        //Eliminar achivo
-        req.archivo = nombre;
-        
-        //Eliminar entrada de la bd
-        await Enlaces.findOneAndRemove(req.params.url);
-        next(); //Salta al siguiente controlador
-
-    }else{
-        enlace.descargas--;
-        await enlace.save();
-        console.log("todavia hay descargas")
-    }
+    next();    
 }
