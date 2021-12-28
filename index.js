@@ -8,10 +8,10 @@ const app = express();
 //Conectar a BD
 conectarDB();
 
-const opcionesCors = {
-    origin: process.env.FRONTEND_URL
-}
-app.use(cors(opcionesCors));
+// const opcionesCors = {
+//     origin: process.env.FRONTEND_URL
+// }
+app.use(cors());
 
 //Puerto de la app
 const port = process.env.PORT || 4000;
