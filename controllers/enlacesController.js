@@ -81,6 +81,7 @@ exports.verificarPassword = async(req, res, next) =>{
     const enlace = await Enlaces.findOne({url})
     if(bcrypt.compareSync(password, enlace.password)){
         console.log("EXTITOOOOOOO")
+        res.json({password: false, enlace: enlace.url})
         next();
     }else{
         return res.status(401).json({msg:'Password Incorrecto'})
